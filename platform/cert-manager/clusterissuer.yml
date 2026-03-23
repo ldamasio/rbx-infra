@@ -1,0 +1,23 @@
+# ClusterIssuer: Let's Encrypt Production (shared)
+# Single issuer for all domains in the cluster.
+# All Ingress resources should annotate with:
+#   cert-manager.io/cluster-issuer: letsencrypt-prod
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+  labels:
+    app.kubernetes.io/name: letsencrypt-prod
+    app.kubernetes.io/part-of: rbx-infra
+spec:
+  acme:
+    email: ldamasio@gmail.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-prod-account-key
+    solvers:
+      - http01:
+          ingress:
+            ingressClassName: traefik

@@ -3,19 +3,28 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
+  # Namespace
   - namespace.yml
+  # Robson trading app
   - frontend-deploy.yml
   - frontend-svc.yml
+  - frontend-ingress.yml
   - backend-deploy.yml
   - backend-svc.yml
+  - backend-ingress.yml
   - redis-deploy.yml
   - redis-svc.yml
   - paradedb-statefulset.yml
   - paradedb-svc.yml
   - cronjobs.yml
-  - gateway.yml
-  - httproutes.yml
-  - issuer.yml
+  # leandrodamasio.rbx.ia.br
+  - lda-prod-deploy.yml
+  - lda-prod-svc.yml
+  - lda-prod-ingress.yml
+  # rbx.ia.br + rbxsystems.ch
+  - rbx-ia-br-prod-deploy.yml
+  - rbx-ia-br-prod-svc.yml
+  - rbx-ia-br-prod-ingress.yml
 
 commonLabels:
   app.kubernetes.io/part-of: robson
