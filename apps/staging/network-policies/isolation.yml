@@ -1,0 +1,165 @@
+# Network Policies for Staging Isolation
+# ADR-0012: Staging MUST NOT communicate with production namespace
+---
+# Policy 1: Deny all ingress/egress by default (whitelist approach)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all-default
+  namespace: staging
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+
+---
+# Policy 2: Allow internal staging communication
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-staging-internal
+  namespace: staging
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: staging
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: staging
+
+---
+# Policy 3: Allow DNS (kube-dns / CoreDNS)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+  namespace: staging
+spec:
+  podSelector: {}
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+
+---
+# Policy 4: Allow Traefik ingress (from kube-system)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-traefik-ingress
+  namespace: staging
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: traefik
+    ports:
+    - protocol: TCP
+      port: 8000
+    - protocol: TCP
+      port: 3000
+    - protocol: TCP
+      port: 15672
+
+---
+# Policy 5: Allow external egress (Internet)
+# Required for Binance API, cert-manager ACME
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-external-egress
+  namespace: staging
+spec:
+  podSelector: {}
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 80
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 9443
+
+---
+# Policy 6: CRITICAL - Block production namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: block-production
+  namespace: staging
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchExpressions:
+        - key: name
+          operator: NotIn
+          values:
+          - robson
+          - production
+  egress:
+  - to:
+    - namespaceSelector:
+        matchExpressions:
+        - key: name
+          operator: NotIn
+          values:
+          - robson
+          - production
+
+---
+# Policy 7: Allow Prometheus scraping
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-prometheus
+  namespace: staging
+spec:
+  podSelector:
+    matchLabels:
+      app: backend-staging
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    ports:
+    - protocol: TCP
+      port: 9090

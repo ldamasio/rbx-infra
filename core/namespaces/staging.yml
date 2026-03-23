@@ -4,7 +4,55 @@ kind: Namespace
 metadata:
   name: staging
   labels:
+    name: staging
     environment: staging
     istio.io/dataplane-mode: ambient
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
+
+---
+# Resource Quota for Staging
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: staging-quota
+  namespace: staging
+spec:
+  hard:
+    requests.cpu: "4"
+    requests.memory: 8Gi
+    limits.cpu: "8"
+    limits.memory: 16Gi
+    persistentvolumeclaims: "10"
+    requests.storage: 50Gi
+    services.loadbalancers: "1"
+    services: "20"
+    pods: "50"
+
+---
+# Limit Range for Staging
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: staging-limit-range
+  namespace: staging
+spec:
+  limits:
+  - default:
+      cpu: 500m
+      memory: 1Gi
+    defaultRequest:
+      cpu: 100m
+      memory: 256Mi
+    max:
+      cpu: 2000m
+      memory: 4Gi
+    min:
+      cpu: 10m
+      memory: 32Mi
+    type: Container
+  - max:
+      storage: 20Gi
+    min:
+      storage: 1Gi
+    type: PersistentVolumeClaim

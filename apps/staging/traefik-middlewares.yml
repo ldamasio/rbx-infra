@@ -1,0 +1,142 @@
+# Traefik Middlewares - Staging
+# ADR-0016: Hardened ingress (BasicAuth, IP allowlist, rate limiting)
+---
+# BasicAuth Middleware for RabbitMQ Management UI
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: rabbitmq-basicauth
+  namespace: staging
+  labels:
+    app.kubernetes.io/name: rabbitmq-basicauth
+    app.kubernetes.io/part-of: robson
+    environment: staging
+spec:
+  basicAuth:
+    secret: rabbitmq-basicauth-secret
+    realm: "RabbitMQ Management - Staging"
+    removeHeader: false
+
+---
+# IP Allowlist Middleware for RabbitMQ Management UI
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: rabbitmq-ipallowlist
+  namespace: staging
+  labels:
+    app.kubernetes.io/name: rabbitmq-ipallowlist
+    app.kubernetes.io/part-of: robson
+    environment: staging
+spec:
+  ipWhiteList:
+    sourceRange:
+    - "203.0.113.0/24"
+    - "198.51.100.0/24"
+    - "127.0.0.1/32"
+    ipStrategy:
+      depth: 1
+
+---
+# Rate Limiting Middleware for Admin Interfaces
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: ratelimit-admin
+  namespace: staging
+  labels:
+    app.kubernetes.io/name: ratelimit-admin
+    app.kubernetes.io/part-of: robson
+    environment: staging
+spec:
+  rateLimit:
+    average: 60
+    burst: 10
+    period: 1m
+    sourceCriterion:
+      ipStrategy:
+        depth: 1
+
+---
+# IP Allowlist Middleware for criticws
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: criticws-ipallowlist
+  namespace: staging
+  labels:
+    app.kubernetes.io/name: criticws-ipallowlist
+    app.kubernetes.io/part-of: robson
+    environment: staging
+spec:
+  ipWhiteList:
+    sourceRange:
+    - "203.0.113.10/32"
+    - "198.51.100.50/32"
+    ipStrategy:
+      depth: 1
+
+---
+# Rate Limiting Middleware for criticws
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: criticws-ratelimit
+  namespace: staging
+  labels:
+    app.kubernetes.io/name: criticws-ratelimit
+    app.kubernetes.io/part-of: robson
+    environment: staging
+spec:
+  rateLimit:
+    average: 100
+    burst: 20
+    period: 1m
+    sourceCriterion:
+      ipStrategy:
+        depth: 1
+
+---
+# Rate Limiting Middleware for UI WebSocket
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: ws-ratelimit
+  namespace: staging
+  labels:
+    app.kubernetes.io/name: ws-ratelimit
+    app.kubernetes.io/part-of: robson
+    environment: staging
+spec:
+  rateLimit:
+    average: 500
+    burst: 50
+    period: 1m
+    sourceCriterion:
+      ipStrategy:
+        depth: 1
+
+---
+# Security Headers Middleware (all public ingresses)
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: security-headers
+  namespace: staging
+  labels:
+    app.kubernetes.io/name: security-headers
+    app.kubernetes.io/part-of: robson
+    environment: staging
+spec:
+  headers:
+    frameDeny: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsSeconds: 31536000
+    stsIncludeSubdomains: true
+    stsPreload: true
+    customResponseHeaders:
+      X-Frame-Options: "DENY"
+      X-Content-Type-Options: "nosniff"
+      X-XSS-Protection: "1; mode=block"
+      Referrer-Policy: "strict-origin-when-cross-origin"

@@ -1,0 +1,32 @@
+# Ingress: api.staging.rbx.ia.br
+# Backend API - Staging
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-staging
+  namespace: staging
+  labels:
+    app.kubernetes.io/name: api-staging-ingress
+    app.kubernetes.io/part-of: robson
+    environment: staging
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - api.staging.rbx.ia.br
+    secretName: api-staging-tls
+  rules:
+  - host: api.staging.rbx.ia.br
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-staging
+            port:
+              number: 8000
