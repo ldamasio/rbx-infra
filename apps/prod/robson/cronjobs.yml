@@ -28,7 +28,7 @@ spec:
               command:
                 - python
                 - manage.py
-                - monitor_stop_orders
+                - monitor_stops
               env:
                 - name: DJANGO_SETTINGS_MODULE
                   value: "backend.settings"
@@ -124,7 +124,7 @@ spec:
               command:
                 - python
                 - manage.py
-                - update_trailing_stops
+                - adjust_trailing_stops
               env:
                 - name: DJANGO_SETTINGS_MODULE
                   value: "backend.settings"
@@ -221,6 +221,7 @@ spec:
                 - python
                 - manage.py
                 - scan_patterns
+                - --continuous
               env:
                 - name: DJANGO_SETTINGS_MODULE
                   value: "backend.settings"
