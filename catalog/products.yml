@@ -56,8 +56,7 @@ products:
     repo: https://github.com/ldamasio/argos-radar
     owner: ldamasio
     created: 2026-03-24
-    description: Agentic SaaS platform for public call detection and project
-      submission orchestration
+    description: ""
   - name: eden
     type: cli
     phase: seed

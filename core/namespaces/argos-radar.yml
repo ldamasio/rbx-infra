@@ -1,0 +1,11 @@
+# Namespace: argos-radar
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argos-radar
+  labels:
+    app.kubernetes.io/part-of: argos-radar
+    environment: production
+    istio.io/dataplane-mode: ambient
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"

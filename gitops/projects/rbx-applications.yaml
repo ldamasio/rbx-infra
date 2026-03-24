@@ -30,6 +30,8 @@ spec:
       server: https://kubernetes.default.svc
     - namespace: truthmetal
       server: https://kubernetes.default.svc
+    - namespace: argos-radar
+      server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: ""
       kind: Namespace
