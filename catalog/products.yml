@@ -11,9 +11,9 @@ products:
       - api.robson.rbx.ia.br
     repo: https://github.com/ldamasio/robson
     owner: ldamasio
-    created: "2025-12-01"
-    description: AI-driven directional trading intelligence and automated risk management engine
-
+    created: 2025-12-01
+    description: AI-driven directional trading intelligence and automated risk
+      management engine
   - name: strategos
     type: fullstack
     phase: structuring
@@ -23,20 +23,19 @@ products:
       - api.strategos.gr
     repo: https://github.com/ldamasio/strategos
     owner: ldamasio
-    created: "2026-03-24"
-    description: Strategic operating system — cognitive coordination platform for organizational execution
-
+    created: 2026-03-24
+    description: Strategic operating system — cognitive coordination platform for
+      organizational execution
   - name: thalamus
     type: api
-    phase: structuring
+    phase: seed
     namespace: thalamus
     domains:
       - api.thalamus.rbx.ia.br
     repo: https://github.com/ldamasio/thalamus
     owner: ldamasio
-    created: "2026-03-24"
-    description: Cognitive chamber subsystem — perception routing and memory staging layer
-
+    created: 2026-03-24
+    description: ""
   - name: truthmetal
     type: api
     phase: seed
@@ -45,9 +44,8 @@ products:
       - api.truthmetal.rbx.ia.br
     repo: https://github.com/ldamasio/truthmetal
     owner: ldamasio
-    created: "2026-03-24"
+    created: 2026-03-24
     description: Ground truth governance infrastructure for AI systems
-
   - name: argos-radar
     type: fullstack
     phase: seed
@@ -57,9 +55,9 @@ products:
       - api.argos.rbx.ia.br
     repo: https://github.com/ldamasio/argos-radar
     owner: ldamasio
-    created: "2026-03-24"
-    description: Agentic SaaS platform for public call detection and project submission orchestration
-
+    created: 2026-03-24
+    description: Agentic SaaS platform for public call detection and project
+      submission orchestration
   - name: eden
     type: cli
     phase: seed
@@ -67,5 +65,5 @@ products:
     domains: []
     repo: https://github.com/ldamasio/eden
     owner: ldamasio
-    created: "2026-03-24"
+    created: 2026-03-24
     description: Internal Developer Platform — RBX product creation and governance CLI
