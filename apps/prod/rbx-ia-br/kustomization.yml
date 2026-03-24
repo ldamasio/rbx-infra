@@ -12,3 +12,7 @@ resources:
 commonLabels:
   app.kubernetes.io/part-of: rbx-ia-br
   environment: production
+
+images:
+  - name: docker.io/ldamasio/rbx-ia-br-prod
+    newTag: latest
