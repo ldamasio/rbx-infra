@@ -23,6 +23,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: truthmetal-svc
+                name: truthmetal
                 port:
                   number: 8080
